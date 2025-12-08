@@ -1,0 +1,476 @@
+id,english,spanish,category
+1,bag,bolsa,Ropa y accesorios
+2,clothes,ropa,Ropa y accesorios
+3,dress,vestido,Ropa y accesorios
+4,glasses,gafas,Ropa y accesorios
+5,handbag,bolso,Ropa y accesorios
+6,hat,sombrero,Ropa y accesorios
+7,jacket,chaqueta,Ropa y accesorios
+8,jeans,vaqueros,Ropa y accesorios
+9,baseball cap,gorra,Ropa y accesorios
+10,shorts,pantalones cortos,Ropa y accesorios
+11,shirt,camisa,Ropa y accesorios
+12,shoe,zapato,Ropa y accesorios
+13,skirt,falda,Ropa y accesorios
+14,sock,calcetines,Ropa y accesorios
+15,trousers,pantalón,Ropa y accesorios
+16,t-shirt,camiseta,Ropa y accesorios
+17,watch,reloj,Ropa y accesorios
+18,wear,llevar,Ropa y accesorios
+19,boots,botas,Ropa y accesorios
+20,black,negro,Colores
+21,blue,azul,Colores
+22,brown,marrón,Colores
+23,colour,color,Colores
+24,green,verde,Colores
+25,grey,gris,Colores
+26,orange,naranja,Colores
+27,pink,rosa,Colores
+28,purple,morado,Colores
+29,red,rojo,Colores
+30,white,blanco,Colores
+31,yellow,amarillo,Colores
+32,dog,perro,Animales
+33,cat,gato,Animales
+34,bird,pájaro,Animales
+35,fish,pez,Animales
+36,rabbit,conejo,Animales
+37,horse,caballo,Animales
+38,cow,vaca,Animales
+39,pig,cerdo,Animales
+40,elephant,elefante,Animales
+41,apple,manzana,Comida
+42,banana,plátano,Comida
+43,orange,naranja,Comida
+44,bread,pan,Comida
+45,milk,leche,Comida
+46,water,agua,Comida
+47,juice,zumo,Comida
+48,cake,pastel,Comida
+49,ice cream,helado,Comida
+50,chocolate,chocolate,Comida
+51,one,uno,Números
+52,two,dos,Números
+53,three,tres,Números
+54,four,cuatro,Números
+55,five,cinco,Números
+56,six,seis,Números
+57,seven,siete,Números
+58,eight,ocho,Números
+59,nine,nueve,Números
+60,ten,diez,Números
+61,eleven,once,Números
+62,twelve,doce,Números
+63,thirteen,trece,Números
+64,fourteen,catorce,Números
+65,fifteen,quince,Números
+66,sixteen,dieciséis,Números
+67,seventeen,diecisiete,Números
+68,eighteen,dieciocho,Números
+69,nineteen,diecinueve,Números
+70,twenty,veinte,Números
+71,behind,detrás,Lugares
+72,between,entre,Lugares
+73,bookshop,librería,Lugares
+74,here,aquí,Lugares
+75,in,en,Lugares
+76,in front of,delante,Lugares
+77,next to,junto,Lugares
+78,on,en,Lugares
+79,park,parque,Lugares
+80,playground,patio de recreo,Lugares
+81,shop,tienda,Lugares
+82,store,tienda,Lugares
+83,street,calle,Lugares
+84,there,allí,Lugares
+85,under,debajo,Lugares
+86,zoo,zoo,Lugares
+87,afternoon,tarde,Tiempo
+88,birthday,cumpleaños,Tiempo
+89,clock,reloj,Tiempo
+90,day,día,Tiempo
+91,end,fin,Tiempo
+92,evening,noche,Tiempo
+93,morning,mañana,Tiempo
+94,night,noche,Tiempo
+95,today,hoy,Tiempo
+96,watch,reloj,Tiempo
+97,year,año,Tiempo
+98,beach,playa,El mundo
+99,sand,arena,El mundo
+100,sea,mar,El mundo
+101,shell,concha,El mundo
+102,sun,sol,El mundo
+103,tree,árbol,El mundo
+104,water,agua,El mundo
+105,bike,bicicleta,Transporte
+106,boat,barco,Transporte
+107,bus,autobús,Transporte
+108,car,coche,Transporte
+109,drive,conducir,Transporte
+110,fly,volar,Transporte
+111,go,ir,Transporte
+112,helicopter,helicóptero,Transporte
+113,ship,barco,Transporte
+114,lorry,camión,Transporte
+115,motorbike,moto,Transporte
+116,plane,avión,Transporte
+117,ride,montar,Transporte
+118,run,correr,Transporte
+119,swim,nadar,Transporte
+120,train,tren,Transporte
+121,truck,camión,Transporte
+122,badminton,bádminton,Deportes y ocio
+123,ball,pelota,Deportes y ocio
+124,baseball,béisbol,Deportes y ocio
+125,basketball,baloncesto,Deportes y ocio
+126,beach,playa,Deportes y ocio
+127,bike,bicicleta,Deportes y ocio
+128,boat,barco,Deportes y ocio
+129,book,libro,Deportes y ocio
+130,bounce,rebotar,Deportes y ocio
+131,camera,cámara,Deportes y ocio
+132,catch,atrapar,Deportes y ocio
+133,doll,muñeca,Deportes y ocio
+134,draw,dibujar,Deportes y ocio
+135,drive,conducir,Deportes y ocio
+136,enjoy,disfrutar,Deportes y ocio
+137,favourite,favorito,Deportes y ocio
+138,fishing,pesca,Deportes y ocio
+139,fly,volar,Deportes y ocio
+140,football,fútbol,Deportes y ocio
+141,game,juego,Deportes y ocio
+142,guitar,guitarra,Deportes y ocio
+143,hit,golpear,Deportes y ocio
+144,hobby,pasatiempo,Deportes y ocio
+145,hockey,hockey,Deportes y ocio
+146,jump,saltar,Deportes y ocio
+147,kick,patear,Deportes y ocio
+148,kite,cometa,Deportes y ocio
+149,listen,escuchar,Deportes y ocio
+150,music,música,Deportes y ocio
+151,paint,pintar,Deportes y ocio
+152,photo,foto,Deportes y ocio
+153,piano,piano,Deportes y ocio
+154,picture,imagen,Deportes y ocio
+155,play,jugar,Deportes y ocio
+156,radio,radio,Deportes y ocio
+157,read,leer,Deportes y ocio
+158,ride,montar,Deportes y ocio
+159,run,correr,Deportes y ocio
+160,sing,cantar,Deportes y ocio
+161,soccer,fútbol,Deportes y ocio
+162,song,canción,Deportes y ocio
+163,sport,deporte,Deportes y ocio
+164,story,cuento,Deportes y ocio
+165,swim,nadar,Deportes y ocio
+166,table tennis,ping pong,Deportes y ocio
+167,take a photo,tomar una foto,Deportes y ocio
+168,television,televisión,Deportes y ocio
+169,tennis,tenis,Deportes y ocio
+170,throw,lanzar,Deportes y ocio
+171,toy,juguete,Deportes y ocio
+172,walk,caminar,Deportes y ocio
+173,watch,mirar,Deportes y ocio
+174,skateboard,monopatín,Deportes y ocio
+175,tennis racket,raqueta de tenis,Deportes y ocio
+176,board game,juego de mesa,Deportes y ocio
+177,skateboarding,patinaje,Deportes y ocio
+178,scary,aterrador,Deportes y ocio
+179,silly,tonto,Deportes y ocio
+180,alien,extraterrestre,Juguetes
+181,ball,pelota,Juguetes
+182,balloon,globo,Juguetes
+183,baseball,béisbol,Juguetes
+184,basketball,baloncesto,Juguetes
+185,bike,bicicleta,Juguetes
+186,boat,barco,Juguetes
+187,car,coche,Juguetes
+188,doll,muñeca,Juguetes
+189,football,balón de fútbol,Juguetes
+190,game,juego,Juguetes
+191,helicopter,helicóptero,Juguetes
+192,kite,cometa,Juguetes
+193,lorry,camión,Juguetes
+194,monster,monstruo,Juguetes
+195,plane,avión,Juguetes
+196,robot,robot,Juguetes
+197,soccer,fútbol,Juguetes
+198,toy,juguete,Juguetes
+199,train,tren,Juguetes
+200,truck,camión,Juguetes
+201,teddy bear,osito de peluche,Juguetes
+202,alphabet,alfabeto,Escuela
+203,answer,respuesta,Escuela
+204,ask,preguntar,Escuela
+205,board,pizarra,Escuela
+206,book,libro,Escuela
+207,bookcase,estantería,Escuela
+208,class,clase,Escuela
+209,classroom,aula,Escuela
+210,close,cerrar,Escuela
+211,colour,color,Escuela
+212,computer,ordenador,Escuela
+213,correct,correcto,Escuela
+214,cross,cruz,Escuela
+215,cupboard,armario,Escuela
+216,desk,escritorio,Escuela
+217,door,puerta,Escuela
+218,draw,dibujar,Escuela
+219,English,inglés,Escuela
+220,eraser,goma de borrar,Escuela
+221,example,ejemplo,Escuela
+222,find,encontrar,Escuela
+223,floor,suelo,Escuela
+224,keyboard,teclado,Escuela
+225,know,saber,Escuela
+226,learn,aprender,Escuela
+227,lesson,lección,Escuela
+228,letter,letra,Escuela
+229,line,línea,Escuela
+230,listen,escuchar,Escuela
+231,look,mirar,Escuela
+232,mouse,ratón,Escuela
+233,music,música,Escuela
+234,number,número,Escuela
+235,open,abrir,Escuela
+236,page,página,Escuela
+237,part,parte,Escuela
+238,pen,bolígrafo,Escuela
+239,pencil,lápiz,Escuela
+240,picture,imagen,Escuela
+241,playground,patio,Escuela
+242,question,pregunta,Escuela
+243,read,leer,Escuela
+244,right,correcto,Escuela
+245,rubber,goma,Escuela
+246,ruler,regla,Escuela
+247,school,escuela,Escuela
+248,sentence,frase,Escuela
+249,sit,sentarse,Escuela
+250,spell,deletrear,Escuela
+251,stand,estar de pie,Escuela
+252,story,cuento,Escuela
+253,teacher,profesor,Escuela
+254,tell,decir,Escuela
+255,test,examen,Escuela
+256,tick,marca,Escuela
+257,understand,entender,Escuela
+258,wall,pared,Escuela
+259,window,ventana,Escuela
+260,word,palabra,Escuela
+261,write,escribir,Escuela
+262,fun,divertido,Escuela
+263,paper,papel,Escuela
+264,count,contar,Escuela
+265,hooray,¡hurra!,Escuela
+266,cool,genial,Escuela
+267,crayons,crayones,Escuela
+268,clap,aplaudir,Escuela
+269,fantastic,fantástico,Escuela
+270,animal,animal,Animales
+271,chicken,pollo,Animales
+272,duck,pato,Animales
+273,frog,rana,Animales
+274,giraffe,jirafa,Animales
+275,goat,cabra,Animales
+276,hippo,hipopótamo,Animales
+277,lizard,lagarto,Animales
+278,monkey,mono,Animales
+279,mouse,ratón,Animales
+280,sheep,oveja,Animales
+281,snake,serpiente,Animales
+282,spider,araña,Animales
+283,tail,cola,Animales
+284,tiger,tigre,Animales
+285,bat,murciélago,Animales
+286,bear,oso,Animales
+287,jellyfish,medusa,Animales
+288,zebra,cebra,Animales
+289,bee,abeja,Animales
+290,donkey,burro,Animales
+291,polar bear,oso polar,Animales
+292,pet,mascota,Animales
+293,arm,brazo,Cuerpo
+294,body,cuerpo,Cuerpo
+295,ear,oreja,Cuerpo
+296,eye,ojo,Cuerpo
+297,face,cara,Cuerpo
+298,foot,pie,Cuerpo
+299,hair,pelo,Cuerpo
+300,hand,mano,Cuerpo
+301,head,cabeza,Cuerpo
+302,leg,pierna,Cuerpo
+303,mouth,boca,Cuerpo
+304,nose,nariz,Cuerpo
+305,smile,sonrisa,Cuerpo
+306,baby,bebé,Familia y amigos
+307,boy,niño,Familia y amigos
+308,brother,hermano,Familia y amigos
+309,child,niño,Familia y amigos
+310,cousin,primo,Familia y amigos
+311,daddy,papá,Familia y amigos
+312,family,familia,Familia y amigos
+313,father,padre,Familia y amigos
+314,friend,amigo,Familia y amigos
+315,girl,chica,Familia y amigos
+316,grandfather,abuelo,Familia y amigos
+317,grandma,abuela,Familia y amigos
+318,grandmother,abuela,Familia y amigos
+319,grandpa,abuelo,Familia y amigos
+320,kids,niños,Familia y amigos
+321,man,hombre,Familia y amigos
+322,mother,madre,Familia y amigos
+323,mummy,mamá,Familia y amigos
+324,old,viejo,Familia y amigos
+325,person,persona,Familia y amigos
+326,sister,hermana,Familia y amigos
+327,woman,mujer,Familia y amigos
+328,young,joven,Familia y amigos
+329,classmates,compañeros,Familia y amigos
+330,bean,judía,Comida
+331,breakfast,desayuno,Comida
+332,burger,hamburguesa,Comida
+333,candy,caramelo,Comida
+334,carrot,zanahoria,Comida
+335,chicken,pollo,Comida
+336,chips,patatas,Comida
+337,coconut,coco,Comida
+338,dinner,cena,Comida
+339,drink,beber,Comida
+340,eat,comer,Comida
+341,egg,huevo,Comida
+342,fish,pescado,Comida
+343,food,comida,Comida
+344,fruit,fruta,Comida
+345,grape,uva,Comida
+346,kiwi,kiwi,Comida
+347,lemon,limón,Comida
+348,lemonade,limonada,Comida
+349,lunch,almuerzo,Comida
+350,mango,mango,Comida
+351,meat,carne,Comida
+352,onion,cebolla,Comida
+353,pea,guisante,Comida
+354,pear,pera,Comida
+355,pineapple,piña,Comida
+356,potato,patata,Comida
+357,rice,arroz,Comida
+358,sausage,salchicha,Comida
+359,supper,cena,Comida
+360,sweet,dulce,Comida
+361,tomato,tomate,Comida
+362,watermelon,sandía,Comida
+363,meatballs,albóndigas,Comida
+364,pie,tarta,Comida
+365,Alex,Alex,Nombres
+366,Alice,Alicia,Nombres
+367,Ann,Ana,Nombres
+368,Mark,Marcos,Nombres
+369,Anna,Ana,Nombres
+370,Ben,Ben,Nombres
+371,Bill,Bill,Nombres
+372,Dan,Dan,Nombres
+373,Grace,Gracia,Nombres
+374,Jill,Jill,Nombres
+375,Kim,Kim,Nombres
+376,Lucy,Lucía,Nombres
+377,Eva,Eva,Nombres
+378,May,May,Nombres
+379,Matt,Mateo,Nombres
+380,Nick,Nico,Nombres
+381,Pat,Pat,Nombres
+382,Sam,Sam,Nombres
+383,Sue,Sue,Nombres
+384,Tom,Tomás,Nombres
+385,Tony,Antonio,Nombres
+386,Hugo,Hugo,Nombres
+387,apartment,apartamento,Hogar
+388,armchair,sillón,Hogar
+389,bath,bañera,Hogar
+390,bathroom,baño,Hogar
+391,bed,cama,Hogar
+392,bedroom,dormitorio,Hogar
+393,bookcase,estantería,Hogar
+394,box,caja,Hogar
+395,camera,cámara,Hogar
+396,chair,silla,Hogar
+397,clock,reloj,Hogar
+398,computer,ordenador,Hogar
+399,cupboard,armario,Hogar
+400,desk,mesa,Hogar
+401,dining room,comedor,Hogar
+402,doll,muñeca,Hogar
+403,door,puerta,Hogar
+404,flat,piso,Hogar
+405,flower,flor,Hogar
+406,garden,jardín,Hogar
+407,hall,pasillo,Hogar
+408,home,hogar,Hogar
+409,house,casa,Hogar
+410,kitchen,cocina,Hogar
+411,lamp,lámpara,Hogar
+412,living room,salón,Hogar
+413,mat,alfombra,Hogar
+414,mirror,espejo,Hogar
+415,painting,pintura,Hogar
+416,phone,teléfono,Hogar
+417,picture,cuadro,Hogar
+418,radio,radio,Hogar
+419,room,habitación,Hogar
+420,sleep,dormir,Hogar
+421,sofa,sofá,Hogar
+422,table,mesa,Hogar
+423,television,televisión,Hogar
+424,toy,juguete,Hogar
+425,tree,árbol,Hogar
+426,wall,pared,Hogar
+427,watch,reloj,Hogar
+428,window,ventana,Hogar
+429,rug,alfombra,Hogar
+430,favourite,favorito,Hogar
+431,go to bed,ir a la cama,Hogar
+432,go to sleep,ir a dormir,Hogar
+433,thing,cosa,Hogar
+434,poster,cartel,Hogar
+435,tablet,tablet,Hogar
+436,baseball,béisbol,Spelling Bee
+437,blue,azul,Spelling Bee
+438,bunny,conejito,Spelling Bee
+439,car,coche,Spelling Bee
+440,class,clase,Spelling Bee
+441,cookie,galleta,Spelling Bee
+442,costume,disfraz,Spelling Bee
+443,dance,bailar,Spelling Bee
+444,drink,beber,Spelling Bee
+445,egg,huevo,Spelling Bee
+446,english,inglés,Spelling Bee
+447,father,padre,Spelling Bee
+448,finger,dedo,Spelling Bee
+449,friday,viernes,Spelling Bee
+450,friend,amigo,Spelling Bee
+451,game,juego,Spelling Bee
+452,garden,jardín,Spelling Bee
+453,grandma,abuela,Spelling Bee
+454,here,aquí,Spelling Bee
+455,ice cream,helado,Spelling Bee
+456,jacket,chaqueta,Spelling Bee
+457,july,julio,Spelling Bee
+458,kitchen,cocina,Spelling Bee
+459,learn,aprender,Spelling Bee
+460,make,hacer,Spelling Bee
+461,mouse,ratón,Spelling Bee
+462,move,mover,Spelling Bee
+463,pencil,lápiz,Spelling Bee
+464,picnic,picnic,Spelling Bee
+465,play,jugar,Spelling Bee
+466,purple,morado,Spelling Bee
+467,rainbow,arcoíris,Spelling Bee
+468,sandwich,sándwich,Spelling Bee
+469,sister,hermana,Spelling Bee
+470,story,cuento,Spelling Bee
+471,telephone,teléfono,Spelling Bee
+472,toy,juguete,Spelling Bee
+473,walk,caminar,Spelling Bee
+474,wanted,querido,Spelling Bee
+475,witch,bruja,Spelling Bee
