@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface EvolutionChartProps {
     data: any[]
+    onPointClick?: (data: any) => void
 }
 
-export default function EvolutionChart({ data }: EvolutionChartProps) {
+export default function EvolutionChart({ data, onPointClick }: EvolutionChartProps) {
     if (!data || data.length === 0) {
         return (
             <Card>
@@ -53,8 +54,8 @@ export default function EvolutionChart({ data }: EvolutionChartProps) {
                             dataKey="accuracy"
                             stroke="#8884d8"
                             strokeWidth={3}
-                            dot={{ r: 4, fill: "#8884d8" }}
-                            activeDot={{ r: 6 }}
+                            dot={{ r: 4, fill: "#8884d8", cursor: 'pointer' }}
+                            activeDot={{ r: 6, cursor: 'pointer', onClick: (e: any, payload: any) => onPointClick && onPointClick(payload.payload) }}
                         />
                     </LineChart>
                 </ResponsiveContainer>
