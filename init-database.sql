@@ -2,9 +2,13 @@
 CREATE TABLE IF NOT EXISTS users (
   id VARCHAR(36) PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
+  password VARCHAR(255),
   avatar VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Insertar usuario por defecto
+INSERT INTO users (id, name, password) VALUES (UUID(), 'Daniela', '1234');
 
 CREATE TABLE IF NOT EXISTS categories (
   id VARCHAR(36) PRIMARY KEY,
@@ -580,3 +584,27 @@ INSERT INTO words (id, english, spanish, category_id) VALUES
 ('473', 'walk', 'caminar', 'cat17'),
 ('474', 'wanted', 'querido', 'cat17'),
 ('475', 'witch', 'bruja', 'cat17');
+
+-- Tablas para el módulo de multiplicación
+CREATE TABLE IF NOT EXISTS multiplication_game_results (
+  id VARCHAR(36) PRIMARY KEY,
+  user_id VARCHAR(36) NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  score INT NOT NULL,
+  total_questions INT NOT NULL,
+  time_used INT NOT NULL,
+  mode VARCHAR(20) NOT NULL, -- 'random' or 'sequential'
+  tables_selected JSON NOT NULL, -- Array of selected tables e.g. [2, 3, 5]
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS multiplication_problem_results (
+  id VARCHAR(36) PRIMARY KEY,
+  game_id VARCHAR(36) NOT NULL,
+  factor_a INT NOT NULL,
+  factor_b INT NOT NULL,
+  user_answer INT,
+  correct BOOLEAN NOT NULL,
+  time_used INT NOT NULL,
+  FOREIGN KEY (game_id) REFERENCES multiplication_game_results(id) ON DELETE CASCADE
+);
