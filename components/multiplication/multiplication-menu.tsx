@@ -48,20 +48,20 @@ export default function MultiplicationMenu({ onStart, onBack, onDashboard, onPra
             </CardHeader>
             <CardContent className="space-y-8">
                 {/* Extra Options */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Button
                         variant="outline"
-                        className="h-12 border-purple-200 hover:bg-purple-50 hover:text-purple-700"
+                        className="h-14 sm:h-12 border-purple-200 hover:bg-purple-50 hover:text-purple-700 text-lg sm:text-base"
                         onClick={onDashboard}
                     >
-                        <BarChart3 className="mr-2 h-4 w-4" /> Estadísticas
+                        <BarChart3 className="mr-2 h-5 w-5 sm:h-4 sm:w-4" /> Estadísticas
                     </Button>
                     <Button
                         variant="outline"
-                        className="h-12 border-pink-200 hover:bg-pink-50 hover:text-pink-700"
+                        className="h-14 sm:h-12 border-pink-200 hover:bg-pink-50 hover:text-pink-700 text-lg sm:text-base"
                         onClick={onPracticeWeaknesses}
                     >
-                        <BrainCircuit className="mr-2 h-4 w-4" /> Practicar Fallos
+                        <BrainCircuit className="mr-2 h-5 w-5 sm:h-4 sm:w-4" /> Practicar Fallos
                     </Button>
                 </div>
 
@@ -85,13 +85,13 @@ export default function MultiplicationMenu({ onStart, onBack, onDashboard, onPra
                                 key={num}
                                 onClick={() => toggleTable(num)}
                                 className={cn(
-                                    "h-16 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center gap-1",
+                                    "h-20 sm:h-16 rounded-xl border-2 transition-all duration-200 flex flex-col items-center justify-center gap-1 active:scale-95 touch-manipulation",
                                     selectedTables.includes(num)
                                         ? "border-purple-500 bg-purple-50 text-purple-700 shadow-md scale-105"
                                         : "border-gray-200 hover:border-purple-300 hover:bg-gray-50 text-gray-600"
                                 )}
                             >
-                                <span className="text-2xl font-bold">{num}</span>
+                                <span className="text-3xl sm:text-2xl font-bold">{num}</span>
                                 {selectedTables.includes(num) && (
                                     <Badge variant="secondary" className="bg-purple-200 text-purple-700 text-[10px] h-4 px-1">
                                         <Check className="w-3 h-3 mr-0.5" /> Seleccionada

@@ -37,13 +37,24 @@ export default function MultiplicationResults({
         return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
+    const getLevelColor = (level: string) => {
+        switch (level) {
+            case "mastered": return "bg-green-500"
+            case "advanced": return "bg-green-300"
+            case "intermediate": return "bg-yellow-200"
+            case "beginner": return "bg-orange-300"
+            case "novice": return "bg-red-500"
+            default: return "bg-gray-200"
+        }
+    }
+
     return (
         <div className="w-full max-w-2xl mx-auto space-y-6">
             <Card className="bg-white/90 backdrop-blur-sm shadow-xl border-purple-200 overflow-hidden">
                 <div className="bg-purple-600 p-6 text-center text-white">
                     <Trophy className="w-16 h-16 mx-auto mb-4 text-yellow-300" />
                     <h2 className="text-3xl font-bold mb-2">{getMessage()}</h2>
-                    <div className="flex justify-center gap-8 mt-6">
+                    <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 mt-6">
                         <div className="text-center">
                             <p className="text-purple-200 text-sm uppercase tracking-wider font-semibold">Puntuación</p>
                             <p className="text-4xl font-bold">{score}/{totalQuestions}</p>
@@ -56,37 +67,44 @@ export default function MultiplicationResults({
                 </div>
 
                 <CardContent className="p-6 space-y-6">
-                    {/* Mistakes Review */}
-                    {score < totalQuestions && (
-                        <div className="space-y-3">
-                            <h3 className="font-semibold text-gray-700 flex items-center gap-2">
-                                <XCircle className="w-5 h-5 text-red-500" />
-                                Repasemos los errores:
-                            </h3>
-                            <ScrollArea className="h-48 rounded-md border p-4 bg-gray-50">
-                                <div className="space-y-3">
-                                    {results.filter(r => !r.correct).map((result) => (
-                                        <div key={result.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-red-100 shadow-sm">
-                                            <div className="flex items-center gap-3">
-                                                <span className="font-mono text-lg font-bold text-gray-700">
-                                                    {result.factorA} × {result.factorB}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-4 text-sm">
-                                                <div className="text-red-500">
-                                                    Tu respuesta: <span className="font-bold">{result.userAnswer}</span>
+                    {/* Results Review */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-purple-500" />
+                            Resumen de la partida:
+                        </h3>
+                        <ScrollArea className="h-48 rounded-md border p-4 bg-gray-50">
+                            <div className="space-y-3">
+                                {results.map((result) => (
+                                    <div key={result.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white p-3 rounded-lg border border-gray-100 shadow-sm gap-2 sm:gap-0">
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-mono text-lg font-bold text-gray-700">
+                                                {result.factorA} × {result.factorB}
+                                            </span>
+                                            {/* Level Transition Indicator */}
+                                            {result.levelBefore && result.levelAfter && (
+                                                <div className="flex items-center gap-1 ml-2 text-xs">
+                                                    <div className={`w-3 h-3 rounded-full ${getLevelColor(result.levelBefore)}`} title={`Antes: ${result.levelBefore}`} />
+                                                    <span>→</span>
+                                                    <div className={`w-3 h-3 rounded-full ${getLevelColor(result.levelAfter)}`} title={`Ahora: ${result.levelAfter}`} />
                                                 </div>
-                                                <div className="text-green-600">
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-4 text-sm w-full sm:w-auto">
+                                            <div className={result.correct ? "text-green-600" : "text-red-500"}>
+                                                Tu respuesta: <span className="font-bold">{result.userAnswer === -1 ? "Tiempo" : result.userAnswer}</span>
+                                            </div>
+                                            {!result.correct && (
+                                                <div className="text-gray-500">
                                                     Correcta: <span className="font-bold">{result.factorA * result.factorB}</span>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
-                                    ))}
-                                </div>
-                            </ScrollArea>
-                        </div>
-                    )}
-
+                                    </div>
+                                ))}
+                            </div>
+                        </ScrollArea>
+                    </div>
                     {/* Actions */}
                     <div className="flex flex-col sm:flex-row gap-4 pt-2">
                         <Button
@@ -105,6 +123,6 @@ export default function MultiplicationResults({
                     </div>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }

@@ -7,7 +7,7 @@ import MultiplicationResults from "./multiplication/multiplication-results"
 import AnalyticsDashboard from "./dashboard/analytics-dashboard"
 import { useMultiplicationStore } from "@/lib/multiplication-store"
 import { useAuthStore } from "@/lib/auth-store"
-import { getMostFailedQuestions } from "@/lib/db-analytics"
+import { getMostFailedQuestions, getQuestionStats } from "@/lib/db-analytics"
 import type { MultiplicationProblemResult } from "@/types/multiplication"
 
 type GameState = "menu" | "playing" | "results" | "dashboard"
@@ -27,10 +27,74 @@ export default function MultiplicationGame() {
 
     const { addGameResult } = useMultiplicationStore()
     const { user } = useAuthStore()
+    const [stats, setStats] = useState<any[]>([])
 
-    const handleStartGame = (tables: number[], mode: "random" | "sequential") => {
+    const handleStartGame = async (tables: number[], mode: "random" | "sequential") => {
         setConfig({ tables, mode })
         setInitialQuestions(undefined)
+
+        if (mode === "random" && user) {
+            try {
+                const questionStats = await getQuestionStats(user.id)
+                setStats(questionStats)
+
+                // Generate all possible questions from selected tables
+                const possibleQuestions: any[] = []
+                tables.forEach(table => {
+                    for (let i = 1; i <= 10; i++) {
+                        possibleQuestions.push({ factorA: table, factorB: i, answer: table * i })
+                    }
+                })
+
+                // Calculate weights
+                const weightedQuestions = possibleQuestions.map(q => {
+                    const stat = questionStats.find((s: any) => s.factor_a === q.factorA && s.factor_b === q.factorB)
+                    const attempts = stat ? stat.attempts : 0
+                    const failures = stat ? stat.incorrect_count : 0
+
+                    // Weight formula:
+                    // 1. Prioritize low attempts: 100 / (attempts + 1)
+                    // 2. Prioritize high failures: failures * 5
+                    const weight = (100 / (attempts + 1)) + (failures * 5)
+
+                    return { ...q, weight }
+                })
+
+                // Select 10 questions based on weights
+                const selectedQuestions: any[] = []
+                const questionsToSelect = [...weightedQuestions]
+
+                for (let i = 0; i < 10; i++) {
+                    if (questionsToSelect.length === 0) break
+
+                    const totalWeight = questionsToSelect.reduce((sum, q) => sum + q.weight, 0)
+                    let random = Math.random() * totalWeight
+
+                    const selectedIndex = questionsToSelect.findIndex(q => {
+                        random -= q.weight
+                        return random <= 0
+                    })
+
+                    if (selectedIndex !== -1) {
+                        selectedQuestions.push(questionsToSelect[selectedIndex])
+                        questionsToSelect.splice(selectedIndex, 1) // Remove to avoid duplicates
+                    } else {
+                        // Fallback if something goes wrong with weights (shouldn't happen)
+                        selectedQuestions.push(questionsToSelect[0])
+                        questionsToSelect.shift()
+                    }
+                }
+
+                setInitialQuestions(selectedQuestions)
+            } catch (e) {
+                console.error("Error generating weighted questions", e)
+                // Fallback to default random logic in Challenge component if this fails
+                setInitialQuestions(undefined)
+            }
+        } else {
+            setInitialQuestions(undefined)
+        }
+
         setGameState("playing")
     }
 
@@ -112,6 +176,7 @@ export default function MultiplicationGame() {
                     tables={config.tables}
                     mode={config.mode}
                     initialQuestions={initialQuestions}
+                    initialStats={stats}
                     onComplete={handleGameComplete}
                     onCancel={handleMenu}
                 />

@@ -14,20 +14,33 @@ const dbConfig = {
 
 const pool = mysql.createPool(dbConfig)
 
-export async function getUserEvolution(userId: string) {
+export async function getUserEvolution(userId: string, period: 'week' | 'month' | 'year' | 'all' = 'all') {
   try {
-    // Get last 20 games for evolution graph
+    let dateFilter = ''
+    if (period === 'week') {
+      dateFilter = 'AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)'
+    } else if (period === 'month') {
+      dateFilter = 'AND date >= DATE_SUB(NOW(), INTERVAL 30 DAY)'
+    } else if (period === 'year') {
+      dateFilter = 'AND date >= DATE_SUB(NOW(), INTERVAL 1 YEAR)'
+    }
+
+    // Get games based on filter, order by date DESC to get latest, then subquery to order ASC for chart
     const [rows] = await pool.execute(`
-      SELECT 
-        id,
-        DATE_FORMAT(date, '%d/%m %H:%i') as label,
-        score,
-        total_questions,
-        (score / total_questions) * 100 as accuracy
-      FROM multiplication_game_results 
-      WHERE user_id = ? 
-      ORDER BY date ASC 
-      LIMIT 100
+      SELECT * FROM (
+        SELECT 
+          id,
+          DATE_FORMAT(date, '%d/%m %H:%i') as label,
+          score,
+          total_questions,
+          (score / total_questions) * 100 as accuracy,
+          date
+        FROM multiplication_game_results 
+        WHERE user_id = ? ${dateFilter}
+        ORDER BY date DESC 
+        LIMIT 100
+      ) as sub
+      ORDER BY date ASC
     `, [userId])
     return rows as any[]
   } catch (error) {
@@ -119,6 +132,27 @@ export async function getGameDetails(gameId: string) {
     return rows as any[]
   } catch (error) {
     console.error("Error fetching game details:", error)
+    return []
+  }
+}
+
+export async function getQuestionStats(userId: string) {
+  try {
+    const [rows] = await pool.execute(`
+      SELECT 
+        factor_a,
+        factor_b,
+        SUM(CASE WHEN correct = 1 THEN 1 ELSE 0 END) as correct_count,
+        SUM(CASE WHEN correct = 0 THEN 1 ELSE 0 END) as incorrect_count,
+        COUNT(*) as attempts
+      FROM multiplication_problem_results pr
+      JOIN multiplication_game_results gr ON pr.game_id = gr.id
+      WHERE gr.user_id = ?
+      GROUP BY factor_a, factor_b
+    `, [userId])
+    return rows as any[]
+  } catch (error) {
+    console.error("Error fetching question stats:", error)
     return []
   }
 }

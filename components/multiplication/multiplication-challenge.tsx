@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress"
 import { Mic, MicOff, Send, X, Volume2, HelpCircle, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 import confetti from "canvas-confetti"
+import { v4 as uuidv4 } from 'uuid';
 import type { MultiplicationProblemResult } from "@/types/multiplication"
 
 // Tipos para Web Speech API
@@ -20,6 +21,7 @@ interface MultiplicationChallengeProps {
     tables: number[]
     mode: "random" | "sequential"
     initialQuestions?: Question[]
+    initialStats?: any[]
     onComplete: (results: MultiplicationProblemResult[], score: number, timeUsed: number) => void
     onCancel: () => void
 }
@@ -30,7 +32,9 @@ type Question = {
     answer: number
 }
 
-export default function MultiplicationChallenge({ tables, mode, initialQuestions, onComplete, onCancel }: MultiplicationChallengeProps) {
+type Level = "mastered" | "advanced" | "intermediate" | "beginner" | "novice"
+
+export default function MultiplicationChallenge({ tables, mode, initialQuestions, initialStats, onComplete, onCancel }: MultiplicationChallengeProps) {
     const [questions, setQuestions] = useState<Question[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
     const [userInput, setUserInput] = useState("")
@@ -41,11 +45,29 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
     const [questionStartTime, setQuestionStartTime] = useState(Date.now())
     const [timeLeft, setTimeLeft] = useState(20)
 
+    // Gamification state
+    const [localStats, setLocalStats] = useState<Map<string, { correct: number, incorrect: number }>>(new Map())
+    const [levelUp, setLevelUp] = useState<{ type: "level-up" | "mastered", from: Level, to: Level } | null>(null)
+
     const inputRef = useRef<HTMLInputElement>(null)
     const recognitionRef = useRef<any>(null)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-    // Inicializar preguntas
+    // Initialize stats map
+    useEffect(() => {
+        if (initialStats) {
+            const map = new Map()
+            initialStats.forEach(stat => {
+                map.set(`${stat.factor_a}x${stat.factor_b}`, {
+                    correct: Number(stat.correct_count),
+                    incorrect: Number(stat.incorrect_count)
+                })
+            })
+            setLocalStats(map)
+        }
+    }, [initialStats])
+
+    // ... (useEffect for questions initialization remains the same)
     useEffect(() => {
         if (initialQuestions && initialQuestions.length > 0) {
             setQuestions(initialQuestions)
@@ -76,15 +98,13 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
         setQuestionStartTime(Date.now())
     }, [tables, mode, initialQuestions])
 
-    // Timer logic
+    // ... (Timer logic remains the same)
     useEffect(() => {
         if (questions.length === 0) return
-
         if (feedback !== "none") {
             if (timerRef.current) clearInterval(timerRef.current)
             return
         }
-
         setTimeLeft(20)
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
@@ -96,20 +116,19 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                 return prev - 1
             })
         }, 1000)
-
         return () => {
             if (timerRef.current) clearInterval(timerRef.current)
         }
     }, [currentIndex, feedback, questions])
 
-    // Focus input on mount and question change
+    // ... (Focus input logic remains the same)
     useEffect(() => {
         if (feedback === "none" && inputRef.current) {
             inputRef.current.focus()
         }
     }, [currentIndex, feedback])
 
-    // Configurar reconocimiento de voz
+    // ... (Speech recognition logic remains the same)
     useEffect(() => {
         if (typeof window !== "undefined") {
             const { webkitSpeechRecognition, SpeechRecognition } = window as unknown as IWindow
@@ -156,7 +175,7 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
         }
     }
 
-    const playAudio = (type: "correct" | "incorrect") => {
+    const playAudio = (type: "correct" | "incorrect" | "levelup") => {
         const audio = new Audio(`/sounds/${type}.mp3`)
         audio.volume = 0.5
         audio.play().catch(e => console.error("Error playing sound:", e))
@@ -164,23 +183,19 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
 
     const speakQuestion = (question: Question) => {
         if (typeof window !== "undefined" && 'speechSynthesis' in window) {
-            // Cancelar cualquier habla anterior
             window.speechSynthesis.cancel()
-
             const text = `${question.factorA} por ${question.factorB}`
             const utterance = new SpeechSynthesisUtterance(text)
             utterance.lang = 'es-ES'
-            utterance.rate = 0.9 // Un poco más lento para que sea claro
-            utterance.pitch = 1.1 // Un poco más agudo, tono amable
-
+            utterance.rate = 0.9
+            utterance.pitch = 1.1
             window.speechSynthesis.speak(utterance)
         }
     }
 
-    // Speak question when it changes
+    // ... (Speak question effect remains the same)
     useEffect(() => {
         if (questions.length > 0 && feedback === "none") {
-            // Pequeño delay para que no se solape con el sonido de éxito anterior
             const timer = setTimeout(() => {
                 speakQuestion(questions[currentIndex])
             }, 500)
@@ -188,16 +203,55 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
         }
     }, [currentIndex, questions, feedback])
 
+    const getLevel = (correct: number, incorrect: number): Level => {
+        const total = correct + incorrect
+        if (total === 0) return "novice"
+        const accuracy = correct / total
+
+        if (accuracy >= 0.9) return "mastered"
+        if (accuracy >= 0.7) return "advanced"
+        if (accuracy >= 0.5) return "intermediate"
+        if (accuracy >= 0.3) return "beginner"
+        return "novice"
+    }
+
+    const getLevelColor = (level: Level) => {
+        switch (level) {
+            case "mastered": return "bg-green-500 text-white border-green-600"
+            case "advanced": return "bg-green-300 text-green-900 border-green-400"
+            case "intermediate": return "bg-yellow-200 text-yellow-900 border-yellow-400"
+            case "beginner": return "bg-orange-300 text-orange-900 border-orange-400"
+            case "novice": return "bg-red-500 text-white border-red-600"
+        }
+    }
+
+    const getLevelName = (level: Level) => {
+        switch (level) {
+            case "mastered": return "¡Dominado!"
+            case "advanced": return "Avanzado"
+            case "intermediate": return "Intermedio"
+            case "beginner": return "Principiante"
+            case "novice": return "Novato"
+        }
+    }
+
     const handleTimeout = () => {
         const currentQuestion = questions[currentIndex]
         const timeUsed = 20
 
+        // Update stats for timeout (counts as incorrect)
+        const key = `${currentQuestion.factorA}x${currentQuestion.factorB}`
+        const currentStats = localStats.get(key) || { correct: 0, incorrect: 0 }
+        const newStats = { ...currentStats, incorrect: currentStats.incorrect + 1 }
+        localStats.set(key, newStats)
+        setLocalStats(new Map(localStats))
+
         const newResult: MultiplicationProblemResult = {
-            id: crypto.randomUUID(),
+            id: uuidv4(),
             gameId: "",
             factorA: currentQuestion.factorA,
             factorB: currentQuestion.factorB,
-            userAnswer: -1, // Indicates timeout
+            userAnswer: -1,
             correct: false,
             timeUsed
         }
@@ -217,14 +271,44 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
         const isCorrect = numInput === currentQuestion.answer
         const timeUsed = Math.floor((Date.now() - questionStartTime) / 1000)
 
+        // Gamification Logic
+        const key = `${currentQuestion.factorA}x${currentQuestion.factorB}`
+        const currentStats = localStats.get(key) || { correct: 0, incorrect: 0 }
+        const oldLevel = getLevel(currentStats.correct, currentStats.incorrect)
+
+        const newStats = {
+            correct: currentStats.correct + (isCorrect ? 1 : 0),
+            incorrect: currentStats.incorrect + (isCorrect ? 0 : 1)
+        }
+        localStats.set(key, newStats)
+        setLocalStats(new Map(localStats))
+
+        const newLevel = getLevel(newStats.correct, newStats.incorrect)
+
+        // Check for level up
+        if (isCorrect && newLevel !== oldLevel) {
+            const levels = ["novice", "beginner", "intermediate", "advanced", "mastered"]
+            if (levels.indexOf(newLevel) > levels.indexOf(oldLevel)) {
+                if (newLevel === "mastered") {
+                    setLevelUp({ type: "mastered", from: oldLevel, to: newLevel })
+                } else {
+                    setLevelUp({ type: "level-up", from: oldLevel, to: newLevel })
+                }
+            }
+        } else {
+            setLevelUp(null)
+        }
+
         const newResult: MultiplicationProblemResult = {
-            id: crypto.randomUUID(),
+            id: uuidv4(),
             gameId: "",
             factorA: currentQuestion.factorA,
             factorB: currentQuestion.factorB,
             userAnswer: numInput,
             correct: isCorrect,
-            timeUsed
+            timeUsed,
+            levelBefore: oldLevel,
+            levelAfter: newLevel
         }
 
         const newResults = [...results, newResult]
@@ -232,41 +316,70 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
 
         if (isCorrect) {
             setFeedback("correct")
-            playAudio("correct")
-            confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.7 },
-                colors: ['#a855f7', '#ec4899', '#ffffff']
-            })
+            if (newLevel === "mastered" && oldLevel !== "mastered") {
+                playAudio("levelup") // Use levelup sound for mastery too for now or add specific sound
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    colors: ['#22c55e', '#fbbf24', '#ffffff']
+                })
+            } else if (newLevel !== oldLevel && ["novice", "beginner", "intermediate", "advanced", "mastered"].indexOf(newLevel) > ["novice", "beginner", "intermediate", "advanced", "mastered"].indexOf(oldLevel)) {
+                playAudio("levelup")
+                confetti({
+                    particleCount: 80,
+                    spread: 60,
+                    origin: { y: 0.7 },
+                    colors: ['#60a5fa', '#34d399', '#ffffff']
+                })
+            } else {
+                playAudio("correct")
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 },
+                    colors: ['#a855f7', '#ec4899', '#ffffff']
+                })
+            }
+
             setTimeout(() => {
                 if (currentIndex < questions.length - 1) {
                     setCurrentIndex(prev => prev + 1)
                     setQuestionStartTime(Date.now())
                     setFeedback("none")
+                    setLevelUp(null)
                     setUserInput("")
                 } else {
                     const totalTime = Math.floor((Date.now() - startTime) / 1000)
                     const score = newResults.filter(r => r.correct).length
                     onComplete(newResults, score, totalTime)
                 }
-            }, 1000)
+            }, 2000) // Increased delay to show level up feedback
         } else {
             setFeedback("incorrect")
             playAudio("incorrect")
+            setLevelUp(null)
         }
     }
 
     if (questions.length === 0) return <div>Cargando...</div>
 
     const currentQuestion = questions[currentIndex]
+    const currentKey = `${currentQuestion.factorA}x${currentQuestion.factorB}`
+    const currentStats = localStats.get(currentKey) || { correct: 0, incorrect: 0 }
+    const currentLevel = getLevel(currentStats.correct, currentStats.incorrect)
 
     return (
         <div className="w-full max-w-2xl mx-auto space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
-                <div className="space-y-1">
-                    <h2 className="text-2xl font-bold text-purple-700">Pregunta {currentIndex + 1} de {questions.length}</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="space-y-1 w-full sm:w-auto">
+                    <div className="flex justify-between items-center sm:block">
+                        <h2 className="text-xl md:text-2xl font-bold text-purple-700">Pregunta {currentIndex + 1} de {questions.length}</h2>
+                        <Button variant="ghost" size="icon" onClick={onCancel} className="sm:hidden -mr-2">
+                            <X className="h-6 w-6 text-gray-400 hover:text-red-500" />
+                        </Button>
+                    </div>
                     <div className="flex items-center gap-2">
                         <Clock className={cn("w-4 h-4", timeLeft <= 5 ? "text-red-500 animate-pulse" : "text-gray-500")} />
                         <span className={cn("font-mono font-bold", timeLeft <= 5 ? "text-red-500" : "text-gray-600")}>
@@ -275,23 +388,40 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                         <Progress value={(timeLeft / 20) * 100} className={cn("w-32 h-2", timeLeft <= 5 ? "bg-red-100 [&>div]:bg-red-500" : "")} />
                     </div>
                 </div>
-                <Button variant="ghost" size="icon" onClick={onCancel}>
+                <Button variant="ghost" size="icon" onClick={onCancel} className="hidden sm:inline-flex">
                     <X className="h-6 w-6 text-gray-400 hover:text-red-500" />
                 </Button>
             </div>
 
             {/* Question Card */}
             <Card className={cn(
-                "border-2 transition-all duration-300 transform",
+                "border-4 transition-all duration-500 transform relative overflow-hidden",
                 feedback === "correct" ? "border-green-500 bg-green-50 scale-105" :
                     (feedback === "incorrect" || feedback === "timeout") ? "border-red-500 bg-red-50" :
                         "border-purple-200 bg-white"
             )}>
-                <CardContent className="p-8 md:p-12 flex flex-col items-center justify-center space-y-8">
+                {/* Level Up Overlay */}
+                {levelUp && (
+                    <div className="absolute inset-0 bg-black/50 z-10 flex items-center justify-center animate-in fade-in">
+                        <div className="bg-white p-6 rounded-xl shadow-2xl text-center animate-in zoom-in slide-in-from-bottom-4">
+                            <div className="text-4xl mb-2">
+                                {levelUp.type === "mastered" ? "👑" : "⭐"}
+                            </div>
+                            <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                                {levelUp.type === "mastered" ? "¡MAESTRÍA!" : "¡SUBIDA DE NIVEL!"}
+                            </h3>
+                            <p className="text-gray-600">
+                                Has pasado a <span className={cn("font-bold px-2 py-0.5 rounded", getLevelColor(levelUp.to))}>{getLevelName(levelUp.to)}</span>
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                <CardContent className="p-4 md:p-12 flex flex-col items-center justify-center space-y-6 md:space-y-8">
 
                     {/* The Operation */}
                     <div className="flex flex-col items-center gap-4">
-                        <div className="flex items-center gap-4 text-6xl md:text-8xl font-bold text-slate-800">
+                        <div className="flex items-center gap-2 md:gap-4 text-5xl md:text-8xl font-bold text-slate-800">
                             <span>{currentQuestion.factorA}</span>
                             <span className="text-purple-500">×</span>
                             <span>{currentQuestion.factorB}</span>
@@ -334,6 +464,7 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                                         setCurrentIndex(prev => prev + 1)
                                         setQuestionStartTime(Date.now())
                                         setFeedback("none")
+                                        setLevelUp(null)
                                         setUserInput("")
                                         inputRef.current?.focus()
                                     } else {
@@ -358,13 +489,13 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                                     value={userInput}
                                     onChange={(e) => setUserInput(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleAnswer(userInput)}
-                                    className="text-center text-3xl h-16 font-bold"
+                                    className="text-center text-3xl h-14 md:h-16 font-bold"
                                     placeholder="?"
                                     autoFocus
                                 />
                                 <Button
                                     size="icon"
-                                    className={cn("h-16 w-16 shrink-0", isListening ? "bg-red-500 hover:bg-red-600 animate-pulse" : "bg-purple-600 hover:bg-purple-700")}
+                                    className={cn("h-14 w-14 md:h-16 md:w-16 shrink-0", isListening ? "bg-red-500 hover:bg-red-600 animate-pulse" : "bg-purple-600 hover:bg-purple-700")}
                                     onClick={toggleListening}
                                 >
                                     {isListening ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
@@ -382,6 +513,15 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                             <p className="text-center text-sm text-gray-400">
                                 O presiona Enter para enviar
                             </p>
+                        </div>
+                    )}
+
+                    {/* Current Level Indicator (Always visible) */}
+                    {feedback !== "none" && (
+                        <div className="animate-in fade-in mt-4">
+                            <div className={cn("px-4 py-2 rounded-full border-2 font-bold text-sm flex items-center gap-2", getLevelColor(currentLevel))}>
+                                <span>Nivel: {getLevelName(currentLevel)}</span>
+                            </div>
                         </div>
                     )}
                 </CardContent>

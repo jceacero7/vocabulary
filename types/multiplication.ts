@@ -18,4 +18,6 @@ export type MultiplicationProblemResult = {
     userAnswer: number
     correct: boolean
     timeUsed: number
+    levelBefore?: string
+    levelAfter?: string
 }

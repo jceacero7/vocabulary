@@ -25,18 +25,20 @@ export default function AnalyticsDashboard({ onBack }: AnalyticsDashboardProps) 
     const [gameDetails, setGameDetails] = useState<any[]>([])
     const [isDetailsLoading, setIsDetailsLoading] = useState(false)
 
+    const [period, setPeriod] = useState<'week' | 'month' | 'year' | 'all'>('all')
+
     useEffect(() => {
         if (user) {
             loadData()
         }
-    }, [user])
+    }, [user, period])
 
     const loadData = async () => {
         if (!user) return
         setIsLoading(true)
         try {
             const [evolution, heatmap, history] = await Promise.all([
-                getUserEvolution(user.id),
+                getUserEvolution(user.id, period),
                 getUserHeatmap(user.id),
                 getUserHistory(user.id)
             ])
@@ -82,7 +84,30 @@ export default function AnalyticsDashboard({ onBack }: AnalyticsDashboardProps) 
                     <TabsTrigger value="history">Historial</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="evolution" className="mt-6">
+                <TabsContent value="evolution" className="mt-6 space-y-4">
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            variant={period === 'week' ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPeriod('week')}
+                        >
+                            Semana
+                        </Button>
+                        <Button
+                            variant={period === 'month' ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPeriod('month')}
+                        >
+                            Mes
+                        </Button>
+                        <Button
+                            variant={period === 'all' ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setPeriod('all')}
+                        >
+                            Todo
+                        </Button>
+                    </div>
                     <EvolutionChart data={evolutionData} onPointClick={handleGameClick} />
                 </TabsContent>
 
@@ -101,7 +126,7 @@ export default function AnalyticsDashboard({ onBack }: AnalyticsDashboardProps) 
                                     <p className="text-center text-gray-500 py-8">No hay partidas registradas</p>
                                 ) : (
                                     <div className="rounded-md border">
-                                        <div className="grid grid-cols-4 bg-gray-50 p-3 font-medium text-sm">
+                                        <div className="hidden sm:grid grid-cols-4 bg-gray-50 p-3 font-medium text-sm">
                                             <div>Fecha</div>
                                             <div>Puntuación</div>
                                             <div>Tiempo</div>
@@ -111,15 +136,24 @@ export default function AnalyticsDashboard({ onBack }: AnalyticsDashboardProps) 
                                             {historyData.map((game) => (
                                                 <div
                                                     key={game.id}
-                                                    className="grid grid-cols-4 p-3 text-sm items-center hover:bg-gray-50 cursor-pointer transition-colors"
+                                                    className="grid grid-cols-1 sm:grid-cols-4 p-3 gap-2 sm:gap-0 text-sm items-start sm:items-center hover:bg-gray-50 cursor-pointer transition-colors"
                                                     onClick={() => handleGameClick(game)}
                                                 >
-                                                    <div>{new Date(game.date).toLocaleDateString()} {new Date(game.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                    <div className="font-bold text-purple-700">
+                                                    <div className="font-medium sm:font-normal text-gray-900 sm:text-gray-600">
+                                                        {new Date(game.date).toLocaleDateString()} <span className="text-gray-400 text-xs sm:text-sm">{new Date(game.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    </div>
+                                                    <div className="font-bold text-purple-700 flex items-center justify-between sm:block">
+                                                        <span className="sm:hidden text-gray-500 font-normal">Puntuación:</span>
                                                         {game.score}/{game.total_questions}
                                                     </div>
-                                                    <div className="text-gray-500">{game.time_used}s</div>
-                                                    <div className="capitalize">{game.mode === 'random' ? 'Aleatorio' : 'Secuencial'}</div>
+                                                    <div className="text-gray-500 flex items-center justify-between sm:block">
+                                                        <span className="sm:hidden text-gray-500 font-normal">Tiempo:</span>
+                                                        {game.time_used}s
+                                                    </div>
+                                                    <div className="capitalize flex items-center justify-between sm:block">
+                                                        <span className="sm:hidden text-gray-500 font-normal">Modo:</span>
+                                                        {game.mode === 'random' ? 'Aleatorio' : 'Secuencial'}
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -132,7 +166,7 @@ export default function AnalyticsDashboard({ onBack }: AnalyticsDashboardProps) 
             </Tabs>
 
             <Dialog open={!!selectedGame} onOpenChange={(open) => !open && setSelectedGame(null)}>
-                <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                <DialogContent className="max-w-3xl w-[95vw] max-h-[80vh] overflow-y-auto p-4 sm:p-6">
                     <DialogHeader>
                         <DialogTitle>Detalles de la Partida</DialogTitle>
                         <DialogDescription>

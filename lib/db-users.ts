@@ -1,6 +1,7 @@
 "use server"
 
 import mysql from 'mysql2/promise'
+import { v4 as uuidv4 } from 'uuid';
 
 const dbConfig = {
     host: process.env.MYSQL_HOST || 'localhost',
@@ -46,7 +47,7 @@ export async function verifyUser(userId: string, passwordInput: string) {
 export async function createUser(name: string, password: string) {
     const connection = await mysql.createConnection(dbConfig)
     try {
-        const id = crypto.randomUUID()
+        const id = uuidv4()
         await connection.execute(
             'INSERT INTO users (id, name, password) VALUES (?, ?, ?)',
             [id, name, password]

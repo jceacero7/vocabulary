@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { saveMultiplicationGameResult, loadMultiplicationHistory } from "@/lib/db-multiplication"
 import type { MultiplicationGameResult } from "@/types/multiplication"
+import { v4 as uuidv4 } from 'uuid';
 
 interface MultiplicationState {
     history: MultiplicationGameResult[]
@@ -23,7 +24,7 @@ export const useMultiplicationStore = create<MultiplicationState>((set, get) => 
             set({ isLoading: true, error: null })
 
             const newResult: MultiplicationGameResult = {
-                id: crypto.randomUUID(),
+                id: uuidv4(),
                 ...result
             }
 
