@@ -92,7 +92,7 @@ export async function getUserHistory(userId: string) {
   }
 }
 
-export async function getMostFailedQuestions(userId: string, limit: number = 10) {
+export async function getMostFailedQuestions(userId: string, limit: number = 30) {
   try {
     // Find questions with highest failure rate (min 3 attempts to be significant)
     // Using interpolation for LIMIT to avoid prepared statement issues with some MySQL versions/drivers

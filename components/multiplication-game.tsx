@@ -52,10 +52,15 @@ export default function MultiplicationGame() {
                     const attempts = stat ? stat.attempts : 0
                     const failures = stat ? stat.incorrect_count : 0
 
-                    // Weight formula:
-                    // 1. Prioritize low attempts: 100 / (attempts + 1)
-                    // 2. Prioritize high failures: failures * 5
-                    const weight = (100 / (attempts + 1)) + (failures * 5)
+                    // Weight formula (Improved):
+                    // Base: 10
+                    // New questions bonus: +20
+                    // Failures: * 10 (High priority)
+                    // Review: 100 / (attempts + 1)
+                    let weight = 10 + (attempts === 0 ? 20 : 0) + (failures * 10) + (100 / (attempts + 1))
+
+                    // Add randomness factor (0.8 - 1.2) to break ties and avoid deterministic order
+                    weight = weight * (0.8 + Math.random() * 0.4)
 
                     return { ...q, weight }
                 })
@@ -105,13 +110,19 @@ export default function MultiplicationGame() {
     const handlePracticeWeaknesses = async () => {
         if (!user) return
         try {
-            const weakQuestions = await getMostFailedQuestions(user.id)
+            // Fetch up to 30 weak questions
+            const weakQuestions = await getMostFailedQuestions(user.id, 30)
+
             if (weakQuestions.length === 0) {
                 alert("¡Aún no tienes suficientes fallos registrados para practicar!")
                 return
             }
 
-            const questions = weakQuestions.map(q => ({
+            // Shuffle and pick 10
+            const shuffled = [...weakQuestions].sort(() => Math.random() - 0.5)
+            const selected = shuffled.slice(0, 10)
+
+            const questions = selected.map(q => ({
                 factorA: q.factor_a,
                 factorB: q.factor_b,
                 answer: q.factor_a * q.factor_b
