@@ -20,6 +20,7 @@ interface IWindow extends Window {
 interface MultiplicationChallengeProps {
     tables: number[]
     mode: "random" | "sequential"
+    variant?: "standard" | "guess_multiplier"
     initialQuestions?: Question[]
     initialStats?: any[]
     onComplete: (results: MultiplicationProblemResult[], score: number, timeUsed: number) => void
@@ -34,7 +35,7 @@ type Question = {
 
 type Level = "mastered" | "advanced" | "intermediate" | "beginner" | "novice"
 
-export default function MultiplicationChallenge({ tables, mode, initialQuestions, initialStats, onComplete, onCancel }: MultiplicationChallengeProps) {
+export default function MultiplicationChallenge({ tables, mode, variant = "standard", initialQuestions, initialStats, onComplete, onCancel }: MultiplicationChallengeProps) {
     const [questions, setQuestions] = useState<Question[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
     const [userInput, setUserInput] = useState("")
@@ -175,13 +176,16 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
         }
     }
 
-    const playAudio = (type: "correct" | "incorrect" | "levelup") => {
+    const playAudio = (type: "correct" | "incorrect" | "levelup" | "correct2") => {
         const audio = new Audio(`/sounds/${type}.mp3`)
         audio.volume = 0.5
         audio.play().catch(e => console.error("Error playing sound:", e))
     }
 
     const speakQuestion = (question: Question) => {
+        // Don't speak in guess_multiplier mode as it reveals the answer (the multiplier)
+        if (variant === "guess_multiplier") return
+
         if (typeof window !== "undefined" && 'speechSynthesis' in window) {
             window.speechSynthesis.cancel()
             const text = `${question.factorA} por ${question.factorB}`
@@ -268,7 +272,13 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
         if (isNaN(numInput)) return
 
         const currentQuestion = questions[currentIndex]
-        const isCorrect = numInput === currentQuestion.answer
+        let isCorrect = false
+
+        if (variant === "guess_multiplier") {
+            isCorrect = numInput === currentQuestion.factorB
+        } else {
+            isCorrect = numInput === currentQuestion.answer
+        }
         const timeUsed = Math.floor((Date.now() - questionStartTime) / 1000)
 
         // Gamification Logic
@@ -333,7 +343,7 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                     colors: ['#60a5fa', '#34d399', '#ffffff']
                 })
             } else {
-                playAudio("correct")
+                playAudio(variant === "guess_multiplier" ? "correct2" : "correct")
                 confetti({
                     particleCount: 50,
                     spread: 60,
@@ -424,17 +434,35 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                         <div className="flex items-center gap-2 md:gap-4 text-5xl md:text-8xl font-bold text-slate-800">
                             <span>{currentQuestion.factorA}</span>
                             <span className="text-purple-500">×</span>
-                            <span>{currentQuestion.factorB}</span>
-                            <span className="text-gray-400">=</span>
-                            <span className={cn(
-                                "min-w-[1.5ch] text-center border-b-4 border-dashed",
-                                feedback === "correct" ? "text-green-600 border-green-600" :
-                                    (feedback === "incorrect" || feedback === "timeout") ? "text-red-600 border-red-600" :
-                                        "text-purple-600 border-purple-300"
-                            )}>
-                                {feedback === "none" ? (userInput || "?") :
-                                    feedback === "timeout" ? "!" : userInput}
-                            </span>
+                            {variant === "guess_multiplier" ? (
+                                <>
+                                    <span className={cn(
+                                        "min-w-[1.5ch] text-center border-b-4 border-dashed",
+                                        feedback === "correct" ? "text-green-600 border-green-600" :
+                                            (feedback === "incorrect" || feedback === "timeout") ? "text-red-600 border-red-600" :
+                                                "text-purple-600 border-purple-300"
+                                    )}>
+                                        {feedback === "none" ? (userInput || "?") :
+                                            feedback === "timeout" ? "!" : userInput}
+                                    </span>
+                                    <span className="text-gray-400">=</span>
+                                    <span>{currentQuestion.answer}</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span>{currentQuestion.factorB}</span>
+                                    <span className="text-gray-400">=</span>
+                                    <span className={cn(
+                                        "min-w-[1.5ch] text-center border-b-4 border-dashed",
+                                        feedback === "correct" ? "text-green-600 border-green-600" :
+                                            (feedback === "incorrect" || feedback === "timeout") ? "text-red-600 border-red-600" :
+                                                "text-purple-600 border-purple-300"
+                                    )}>
+                                        {feedback === "none" ? (userInput || "?") :
+                                            feedback === "timeout" ? "!" : userInput}
+                                    </span>
+                                </>
+                            )}
                         </div>
 
                         <Button
@@ -455,7 +483,9 @@ export default function MultiplicationChallenge({ tables, mode, initialQuestions
                                 {feedback === "timeout" ? "¡Se acabó el tiempo!" : "¡Casi!"}
                             </p>
                             <p className="text-lg text-gray-600">
-                                La respuesta correcta es <span className="font-bold text-green-600 text-xl">{currentQuestion.answer}</span>
+                                La respuesta correcta es <span className="font-bold text-green-600 text-xl">
+                                    {variant === "guess_multiplier" ? currentQuestion.factorB : currentQuestion.answer}
+                                </span>
                             </p>
                             <Button
                                 className="mt-4 bg-purple-600 hover:bg-purple-700 text-white"

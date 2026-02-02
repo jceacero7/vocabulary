@@ -10,7 +10,7 @@ import { Play, Check, BarChart3, BrainCircuit } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface MultiplicationMenuProps {
-    onStart: (selectedTables: number[], mode: "random" | "sequential") => void
+    onStart: (selectedTables: number[], mode: "random" | "sequential", variant: "standard" | "guess_multiplier") => void
     onBack: () => void
     onDashboard: () => void
     onPracticeWeaknesses: () => void
@@ -19,6 +19,7 @@ interface MultiplicationMenuProps {
 export default function MultiplicationMenu({ onStart, onBack, onDashboard, onPracticeWeaknesses }: MultiplicationMenuProps) {
     const [selectedTables, setSelectedTables] = useState<number[]>([])
     const [isRandom, setIsRandom] = useState(true)
+    const [isGuessMultiplier, setIsGuessMultiplier] = useState(false)
 
     const toggleTable = (num: number) => {
         setSelectedTables((prev) =>
@@ -36,7 +37,7 @@ export default function MultiplicationMenu({ onStart, onBack, onDashboard, onPra
 
     const handleStart = () => {
         if (selectedTables.length > 0) {
-            onStart(selectedTables, isRandom ? "random" : "sequential")
+            onStart(selectedTables, isRandom ? "random" : "sequential", isGuessMultiplier ? "guess_multiplier" : "standard")
         }
     }
 
@@ -103,20 +104,39 @@ export default function MultiplicationMenu({ onStart, onBack, onDashboard, onPra
                 </div>
 
                 {/* Mode Selection */}
-                <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="space-y-1">
-                        <Label className="text-base font-semibold text-purple-800">Modo Aleatorio</Label>
-                        <p className="text-sm text-gray-600">
-                            {isRandom
-                                ? "Las preguntas aparecerán en orden mezclado"
-                                : "Las preguntas seguirán el orden de las tablas (1x1, 1x2...)"}
-                        </p>
+                <div className="space-y-4">
+                    <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="space-y-1">
+                            <Label className="text-base font-semibold text-purple-800">Modo Aleatorio</Label>
+                            <p className="text-sm text-gray-600">
+                                {isRandom
+                                    ? "Las preguntas aparecerán en orden mezclado"
+                                    : "Las preguntas seguirán el orden de las tablas (1x1, 1x2...)"}
+                            </p>
+                        </div>
+                        <Switch
+                            checked={isRandom}
+                            onCheckedChange={setIsRandom}
+                            className="data-[state=checked]:bg-purple-600"
+                        />
                     </div>
-                    <Switch
-                        checked={isRandom}
-                        onCheckedChange={setIsRandom}
-                        className="data-[state=checked]:bg-purple-600"
-                    />
+
+                    {/* Guess Multiplier Mode Selection */}
+                    <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="space-y-1">
+                            <Label className="text-base font-semibold text-purple-800">Adivinar Multiplicador</Label>
+                            <p className="text-sm text-gray-600">
+                                {isGuessMultiplier
+                                    ? "Adivina el número que falta (ej: 3 x ? = 15)"
+                                    : "Modo clásico: adivina el resultado (ej: 3 x 5 = ?)"}
+                            </p>
+                        </div>
+                        <Switch
+                            checked={isGuessMultiplier}
+                            onCheckedChange={setIsGuessMultiplier}
+                            className="data-[state=checked]:bg-purple-600"
+                        />
+                    </div>
                 </div>
 
                 {/* Actions */}

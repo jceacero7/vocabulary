@@ -14,9 +14,10 @@ type GameState = "menu" | "playing" | "results" | "dashboard"
 
 export default function MultiplicationGame() {
     const [gameState, setGameState] = useState<GameState>("menu")
-    const [config, setConfig] = useState<{ tables: number[]; mode: "random" | "sequential" }>({
+    const [config, setConfig] = useState<{ tables: number[]; mode: "random" | "sequential"; variant: "standard" | "guess_multiplier" }>({
         tables: [],
-        mode: "random"
+        mode: "random",
+        variant: "standard"
     })
     const [initialQuestions, setInitialQuestions] = useState<any[] | undefined>(undefined)
     const [gameResults, setGameResults] = useState<{
@@ -29,8 +30,8 @@ export default function MultiplicationGame() {
     const { user } = useAuthStore()
     const [stats, setStats] = useState<any[]>([])
 
-    const handleStartGame = async (tables: number[], mode: "random" | "sequential") => {
-        setConfig({ tables, mode })
+    const handleStartGame = async (tables: number[], mode: "random" | "sequential", variant: "standard" | "guess_multiplier") => {
+        setConfig({ tables, mode, variant })
         setInitialQuestions(undefined)
 
         if (mode === "random" && user) {
@@ -129,7 +130,7 @@ export default function MultiplicationGame() {
             }))
 
             setInitialQuestions(questions)
-            setConfig({ tables: [], mode: "random" }) // Mode doesn't matter much here
+            setConfig({ tables: [], mode: "random", variant: "standard" }) // Mode doesn't matter much here
             setGameState("playing")
         } catch (e) {
             console.error("Error fetching weak questions", e)
@@ -163,7 +164,7 @@ export default function MultiplicationGame() {
 
     const handleMenu = () => {
         setGameState("menu")
-        setConfig({ tables: [], mode: "random" })
+        setConfig({ tables: [], mode: "random", variant: "standard" })
         setInitialQuestions(undefined)
     }
 
@@ -186,6 +187,7 @@ export default function MultiplicationGame() {
                 <MultiplicationChallenge
                     tables={config.tables}
                     mode={config.mode}
+                    variant={config.variant}
                     initialQuestions={initialQuestions}
                     initialStats={stats}
                     onComplete={handleGameComplete}
