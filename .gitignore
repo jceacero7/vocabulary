@@ -48,3 +48,9 @@ next-env.d.ts
 
 # OS
 Thumbs.db
+
+# Fotos de hojas de vocabulario que se dejan en la raíz para /palabras-nuevas
+/*.jpg
+/*.jpeg
+/*.png
+/*.heic
