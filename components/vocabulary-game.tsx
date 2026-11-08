@@ -58,6 +58,7 @@ export default function VocabularyGame() {
     loadWords,
     addGameResult,
     getGameHistoryForUser,
+    gameHistory,
     isLoading,
     error,
     syncWithDatabase: syncStore,
@@ -430,7 +431,7 @@ export default function VocabularyGame() {
 
       {gameState === "history" && currentUser && (
         <div className="space-y-4">
-          <GameHistory history={getGameHistoryForUser(currentUser.id)} />
+          <GameHistory history={gameHistory} />
           <div className="flex justify-center">
             <Button onClick={goToMenu} className="px-6">
               <Home className="mr-2 h-4 w-4" /> Volver al menú
