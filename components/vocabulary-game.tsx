@@ -9,17 +9,15 @@ import GameMenu from "./game-menu"
 import WordDatabase from "./word-database"
 import ResultsSummary from "./results-summary"
 import CategorySelector from "./category-selector"
-import UserSelector from "./user-selector"
 import AdminPanel from "./admin-panel"
 import { Sparkles, Trophy, RotateCcw, Home, Settings, AlertTriangle, RefreshCw } from "lucide-react"
 import confetti from "canvas-confetti"
 import { useVocabularyStore } from "@/lib/vocabulary-store"
-import { useUserStore } from "@/lib/user-store"
+import { useAuthStore } from "@/lib/auth-store"
 import { isDatabaseAvailable } from "@/lib/db-service"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 type GameState =
-  | "user-select"
   | "menu"
   | "start"
   | "category-select"
@@ -40,7 +38,7 @@ export type WordResult = {
 }
 
 export default function VocabularyGame() {
-  const [gameState, setGameState] = useState<GameState>("user-select")
+  const [gameState, setGameState] = useState<GameState>("menu")
   const [currentWords, setCurrentWords] = useState<Word[]>([])
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
   const [score, setScore] = useState(0)
@@ -64,7 +62,8 @@ export default function VocabularyGame() {
     syncWithDatabase: syncStore,
   } = useVocabularyStore()
 
-  const { currentUser } = useUserStore()
+  // El usuario es siempre el del login (app/page.tsx no deja llegar aquí sin él)
+  const currentUser = useAuthStore((state) => state.user)
 
   // Load words on component mount and check database sync
   useEffect(() => {
@@ -109,15 +108,6 @@ export default function VocabularyGame() {
       setIsSyncing(false)
     }
   }
-
-  // Check if user is selected
-  useEffect(() => {
-    if (currentUser) {
-      setGameState("menu")
-    } else {
-      setGameState("user-select")
-    }
-  }, [currentUser])
 
   // Generate a random exam with the specified number of words from selected categories
   const generateExam = (selectedCats: string[], wordCount: number) => {
@@ -229,7 +219,7 @@ export default function VocabularyGame() {
     // Add to store
     await addGameResult({
       userId: currentUser.id,
-      date: new Date().toLocaleString(),
+      date: new Date().toISOString(),
       score,
       totalWords: currentWords.length,
       timeUsed: totalTimeUsed,
@@ -324,8 +314,6 @@ export default function VocabularyGame() {
           </AlertDescription>
         </Alert>
       )}
-
-      {gameState === "user-select" && <UserSelector />}
 
       {gameState === "menu" && (
         <GameMenu onStartGame={startGame} onViewHistory={viewHistory} onManageWords={manageWords} />

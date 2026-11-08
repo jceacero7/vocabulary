@@ -24,6 +24,9 @@ type GameHistoryProps = {
   history: GameResult[]
 }
 
+const formatDate = (date: string) =>
+  new Date(date).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" })
+
 export default function GameHistory({ history }: GameHistoryProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -43,7 +46,7 @@ export default function GameHistory({ history }: GameHistoryProps) {
 
   // Filter history based on search term
   const filteredHistory = history.filter((game) => {
-    const matchesDate = game.date.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesDate = formatDate(game.date).includes(searchTerm.toLowerCase())
     const matchesCategories = game.categories?.some((cat) => cat.toLowerCase().includes(searchTerm.toLowerCase()))
     return matchesDate || matchesCategories
   })
@@ -102,7 +105,7 @@ export default function GameHistory({ history }: GameHistoryProps) {
                     className="grid grid-cols-5 gap-2 text-xs md:text-sm py-2 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                     onClick={() => setSelectedGame(game)}
                   >
-                    <div className="text-gray-600 truncate">{game.date}</div>
+                    <div className="text-gray-600 truncate">{formatDate(game.date)}</div>
                     <div className="font-medium">
                       {game.score}/{game.totalWords}
                     </div>
@@ -141,7 +144,7 @@ export default function GameHistory({ history }: GameHistoryProps) {
         <Dialog open={!!selectedGame} onOpenChange={(open) => !open && setSelectedGame(null)}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Detalles del examen - {selectedGame?.date}</DialogTitle>
+              <DialogTitle>Detalles del examen - {selectedGame && formatDate(selectedGame.date)}</DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4">
